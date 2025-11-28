@@ -30,6 +30,32 @@ class TaskController extends Controller
         return redirect('/');
     }
 
+    public function edit($id)
+    {
+        $task = Task::findOrFail($id);
+        return view('tasks.index', [
+            'tasks' => Task::all(),
+            'editingTask' => $task
+        ]);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $task = Task::findOrFail($id);
+
+        $validated = $request->validate([
+            'title' => ['required', 'string', 'max:255'],
+            'description' => ['nullable', 'string'],
+        ]);
+
+        $task->update([
+            'title' => $validated['title'],
+            'description' => $validated['description'] ?? null,
+        ]);
+
+        return redirect('/');
+    }
+
     public function destroy($id)
     {
         $task = Task::findOrFail($id);
